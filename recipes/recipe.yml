@@ -17,6 +17,9 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
+  - type: script
+    snippets:
+      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --persistence=/var/lib/nix"
   - type: dnf
     group-install:
       with-optional: true
@@ -29,12 +32,7 @@ modules:
       packages:
         - ghostty
         - nushell
-    remove:
-      packages:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
-        - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+    # remove:
 
   - type: default-flatpaks
     configurations:
@@ -43,7 +41,6 @@ modules:
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
           # Browsers
-          - org.mozilla.firefox
           - com.google.Chrome
           - com.brave.Browser
           # File Utils
