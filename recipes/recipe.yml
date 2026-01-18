@@ -17,9 +17,9 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
-  - type: script
-    snippets:
-      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --no-start-daemon --persistence=/var/lib/nix"
+#  - type: script
+#    snippets:
+#      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --no-start-daemon --persistence=/var/lib/nix"
   - type: dnf
     group-install:
       with-optional: true
