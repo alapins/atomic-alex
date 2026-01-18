@@ -24,7 +24,8 @@ modules:
     repos:
       copr:
         - scottames/ghostty
-        - ryanabx/cosmic-epoch
+        - ryanabx/cosmic-epoch 
+        - atim/nushell
     install:
       packages:
         - ghostty
