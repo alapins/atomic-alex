@@ -31,6 +31,8 @@ modules:
         - ghostty
         - nushell
         - cosmic-desktop
+        - neovim
+        - syncthing
     # remove:
 
   - type: default-flatpaks
@@ -44,7 +46,6 @@ modules:
           - com.brave.Browser
           # File Utils
           - com.dropbox.Client
-          - com.github.zocker_160.SyncThingy
           # Media Creation
           - org.audacityteam.Audacity
           - org.gimp.GIMP
@@ -55,6 +56,7 @@ modules:
           - tv.plex.PlexDesktop
           - com.plexamp.Plexamp
           - org.videolan.VLC
+          - com.yacreader.YACReader
           - org.flameshot.Flameshot # screenshot
           - org.keepassxc.KeePassXC
           - md.obsidian.Obsidian
