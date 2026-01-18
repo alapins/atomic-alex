@@ -19,7 +19,7 @@ modules:
 
   - type: script
     snippets:
-      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --persistence=/var/lib/nix"
+      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --no-start-daemon --persistence=/var/lib/nix"
   - type: dnf
     group-install:
       with-optional: true
