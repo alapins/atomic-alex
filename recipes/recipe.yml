@@ -22,6 +22,18 @@ modules:
 #  - type: script
 #    snippets:
 #      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --no-start-daemon --persistence=/var/lib/nix"
+  - type: rmp-ostree
+    repos:
+      - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+    keys:
+      - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+    optfix:
+      - brave.com
+    install:
+      - brave-browser
+      - https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-2025.05.20-1.fc42.x86_64.rpm
+      - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm 
+      
   - type: dnf
     repos:
       copr:
@@ -43,11 +55,6 @@ modules:
         scope: system
         # If no repo information is specified, Flathub will be used by default
         install: # system flatpaks we want all users to have and not remove
-          # Browsers
-          - com.google.Chrome
-          - com.brave.Browser
-          # File Utils
-          - com.dropbox.Client
           # Media Creation
           - org.audacityteam.Audacity
           - org.gimp.GIMP
