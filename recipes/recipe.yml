@@ -22,7 +22,7 @@ modules:
 #  - type: script
 #    snippets:
 #      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --no-start-daemon --persistence=/var/lib/nix"
-  - type: rmp-ostree
+  - type: rpm-ostree
     repos:
       - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
     keys:
