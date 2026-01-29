@@ -65,6 +65,7 @@ modules:
           - tv.plex.PlexDesktop
           - com.plexamp.Plexamp
           - org.videolan.VLC
+          - us.zoom.Zoom
           - com.yacreader.YACReader
           - org.flameshot.Flameshot # screenshot
           - org.keepassxc.KeePassXC
