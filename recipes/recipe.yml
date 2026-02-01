@@ -66,6 +66,7 @@ modules:
           - com.plexamp.Plexamp
           - org.videolan.VLC
           - us.zoom.Zoom
+          - com.discordapp.Discord
           - com.yacreader.YACReader
           - org.flameshot.Flameshot # screenshot
           - org.keepassxc.KeePassXC
