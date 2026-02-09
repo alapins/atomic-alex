@@ -74,6 +74,7 @@ modules:
           - com.getpostman.Postman
           - io.github.pwr_solaar.solaar # Logitech mouse driver
           - it.mijorus.gearlever
+          - org.onlyoffice.desktopeditors
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
