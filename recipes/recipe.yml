@@ -33,7 +33,6 @@ modules:
       - brave-browser
       - https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-2025.05.20-1.fc42.x86_64.rpm
       - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm 
-      - appimagelauncher
       
   - type: dnf
     repos:
@@ -74,6 +73,7 @@ modules:
           - md.obsidian.Obsidian
           - com.getpostman.Postman
           - io.github.pwr_solaar.solaar # Logitech mouse driver
+          - it.mijorus.gearlever
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
