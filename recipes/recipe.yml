@@ -47,6 +47,7 @@ modules:
         - cosmic-desktop
         - neovim
         - syncthing
+        - emacs
     # remove:
 
   - type: default-flatpaks
