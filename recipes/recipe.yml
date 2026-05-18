@@ -82,8 +82,6 @@ modules:
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
   - type: systemd
     system:
-      disabled:
-        - sddm.service
       enabled:
         - cosmic-greeter.service
         
