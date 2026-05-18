@@ -28,7 +28,6 @@ modules:
         - ryanabx/cosmic-epoch
       files:
         - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-        - https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome.repo
         - https://download.opensuse.org/repositories/home:Kernalix7/Fedora_%OS_VERSION%/home:Kernalix7.repo
       keys:
         - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
@@ -37,7 +36,7 @@ modules:
       packages:
         - brave-browser
         - winpodx
-        - google-chrome-stable
+        - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
         - uxplay
         - nautilus-dropbox
         - ghostty
