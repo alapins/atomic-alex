@@ -32,7 +32,7 @@ modules:
     install:
       - brave-browser
       - uxplay
-      - https://www.dropbox.com/download?dl=packages/fedora/nautilus-dropbox-2025.05.20-1.fc42.x86_64.rpm
+      - https://linux.dropbox.com/packages/fedora/nautilus-dropbox-2026.05.06-1.fc44.x86_64.rpm
       - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm 
       
   - type: dnf
