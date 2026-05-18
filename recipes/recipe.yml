@@ -3,53 +3,47 @@
 # image will be published to ghcr.io/<user>/<name>
 name: atomic-alex
 # description will be included in the image's metadata
-description: This is my personal OS image. 
+description: This is my personal OS image.
 
 # the base image to build on top of (FROM) and the version tag to use
 base-image: ghcr.io/ublue-os/aurora-dx
 image-version: stable # latest is also supported if you want new updates ASAP
 
 # module configuration, executed in order
-# you can include multiple instances of the same module
 modules:
   - type: files
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+
   - type: chezmoi
     repository: "https://github.com/alapins/dotfiles"
     file-conflict-policy: replace # override changed files with those from the repo
-#  - type: script
-#    snippets:
-#      - "curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install ostree --no-confirm --no-start-daemon --persistence=/var/lib/nix"
-  - type: rpm-ostree
-    repos:
-      - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-    keys:
-      - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-    optfix:
-      - brave.com
-    install:
-      - brave-browser
-      - uxplay
-      - https://linux.dropbox.com/packages/fedora/nautilus-dropbox-2026.05.06-1.fc44.x86_64.rpm
-      - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm 
-      
+
   - type: dnf
     repos:
       copr:
         - scottames/ghostty
-        - ryanabx/cosmic-epoch 
         - atim/nushell
+        - ryanabx/cosmic-epoch
+      files:
+        - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+        - https://dl.google.com/linux/chrome/rpm/stable/x86_64/google-chrome.repo
+      keys:
+        - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+      nonfree: rpmfusion
     install:
       packages:
+        - brave-browser
+        - google-chrome-stable
+        - uxplay
+        - nautilus-dropbox
         - ghostty
         - nushell
         - cosmic-desktop
         - neovim
         - syncthing
         - emacs
-    # remove:
 
   - type: default-flatpaks
     configurations:
@@ -80,8 +74,8 @@ modules:
       - scope: user # Also add Flathub user repo, but no user packages
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
+
   - type: systemd
     system:
       enabled:
         - cosmic-greeter.service
-        
