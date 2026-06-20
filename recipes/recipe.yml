@@ -72,7 +72,16 @@ modules:
           - io.github.pwr_solaar.solaar # Logitech mouse driver
           - it.mijorus.gearlever
           - org.onlyoffice.desktopeditors
+          - flathub org.localsend.localsend_app
       - scope: user # Also add Flathub user repo, but no user packages
+
+  # appsync tools baked into the image: the Go (mikefarah) yq required by
+  # ~/.config/appsync/install.sh, plus topgrade. NOTE: Fedora's dnf `yq` is a
+  # different, incompatible tool (python jq-wrapper), so we install the real
+  # binaries from upstream releases instead.
+  - type: script
+    scripts:
+      - install-appsync-tools.sh
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
 
