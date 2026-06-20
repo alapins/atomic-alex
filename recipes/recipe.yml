@@ -72,7 +72,7 @@ modules:
           - io.github.pwr_solaar.solaar # Logitech mouse driver
           - it.mijorus.gearlever
           - org.onlyoffice.desktopeditors
-          - flathub org.localsend.localsend_app
+          - org.localsend.localsend_app
       - scope: user # Also add Flathub user repo, but no user packages
 
   # appsync tools baked into the image: the Go (mikefarah) yq required by
