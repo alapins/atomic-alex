@@ -13,7 +13,15 @@ name: atomic-alex-nvidia
 description: This is my personal OS image (XPS 9570 laptop, NVIDIA).
 
 base-image: ghcr.io/ublue-os/aurora-dx
-image-version: stable
+# MUST be `latest`, not `stable`. uBlue only publishes prebuilt NVIDIA kmods for
+# the rolling/latest main kernel (no kernel-pinned or stable akmods tag exists),
+# and the akmods module hardcodes that rolling tag. `stable` deliberately lags
+# the kernel, so its kernel never matches the prebuilt kmod -> build fails with
+# "cannot install both kernel-core-<old> and kernel-core-<new>". `latest` is the
+# newest daily F44 (NOT a beta) built in the same pipeline as the akmods, so the
+# kernel stays in lockstep and the uBlue-signed kmod works under Secure Boot.
+# (The desktop image has no NVIDIA layering, so it stays on `stable`.)
+image-version: latest
 
 # module configuration, executed in order
 modules:
