@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+# LAPTOP image (Dell XPS 9570) -> ghcr.io/alapins/atomic-alex-nvidia
+# Built from the SAME shared modules as the desktop, plus the proprietary
+# NVIDIA driver layered on top for the GTX 1050 Ti (Pascal).
+#
+# Why aurora-dx + akmods instead of aurora-dx-nvidia-open:
+#   uBlue no longer ships a closed-driver Aurora image, and the *open* NVIDIA
+#   kernel modules only support Turing (GTX 16xx / RTX 20xx) and newer. The
+#   1050 Ti is Pascal, so it needs the proprietary `nvidia` driver, which the
+#   blue-build `akmods` module pulls (signed) from ublue-os/akmods.
+name: atomic-alex-nvidia
+description: This is my personal OS image (XPS 9570 laptop, NVIDIA).
+
+base-image: ghcr.io/ublue-os/aurora-dx
+image-version: stable
+
+# module configuration, executed in order
+modules:
+  - from-file: common/system.yml
+  - from-file: common/dnf.yml
+
+  # --- LAPTOP-ONLY: proprietary NVIDIA driver (Maxwell .. pre-Blackwell) ---
+  # Requires the `signing` module (pulled in via common/finalize.yml) so the
+  # signed kmods verify. `main` is the correct akmods base for aurora-dx.
+  - type: akmods
+    base: main
+    nvidia-driver: nvidia
+    install: [] # no extra kmods beyond the NVIDIA driver
+
+  # --- LAPTOP-ONLY dnf packages (add a dnf module here when needed) ---
+
+  - from-file: common/flatpaks.yml
+
+  # --- LAPTOP-ONLY flatpaks ---
+  # - type: default-flatpaks
+  #   configurations:
+  #     - scope: system
+  #       install:
+  #         - com.example.LaptopOnlyApp
+
+  - from-file: common/finalize.yml

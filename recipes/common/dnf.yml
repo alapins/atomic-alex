@@ -1,0 +1,29 @@
+---
+# Shared dnf repos + packages (run on BOTH images).
+# Machine-only packages go in the individual recipe files, not here.
+modules:
+  - type: dnf
+    repos:
+      copr:
+        - scottames/ghostty
+        - atim/nushell
+        - ryanabx/cosmic-epoch
+      files:
+        - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+        - https://download.opensuse.org/repositories/home:Kernalix7/Fedora_%OS_VERSION%/home:Kernalix7.repo
+      keys:
+        - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+      nonfree: rpmfusion
+    install:
+      packages:
+        - brave-browser
+        - winpodx
+        - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+        - uxplay
+        - nautilus-dropbox
+        - ghostty
+        - nushell
+        - cosmic-desktop
+        - neovim
+        - syncthing
+        - emacs

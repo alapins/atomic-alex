@@ -1,0 +1,18 @@
+---
+# Shared finalisation modules (run on BOTH images, LAST in the module list).
+# signing must come near the end so the policy/signing files land correctly.
+modules:
+  # appsync tools baked into the image: the Go (mikefarah) yq required by
+  # ~/.config/appsync/install.sh, plus topgrade. NOTE: Fedora's dnf `yq` is a
+  # different, incompatible tool (python jq-wrapper), so we install the real
+  # binaries from upstream releases instead.
+  - type: script
+    scripts:
+      - install-appsync-tools.sh
+
+  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+
+  - type: systemd
+    system:
+      enabled:
+        - cosmic-greeter.service

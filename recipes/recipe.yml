@@ -1,91 +1,28 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
+# DESKTOP image -> ghcr.io/alapins/atomic-alex
+# Shared modules live in recipes/common/*.yml and are pulled in with from-file.
+# Anything that should exist ONLY on the desktop goes inline in this file.
 name: atomic-alex
-# description will be included in the image's metadata
-description: This is my personal OS image.
+description: This is my personal OS image (desktop).
 
-# the base image to build on top of (FROM) and the version tag to use
 base-image: ghcr.io/ublue-os/aurora-dx
 image-version: stable # latest is also supported if you want new updates ASAP
 
 # module configuration, executed in order
 modules:
-  - type: files
-    files:
-      - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+  - from-file: common/system.yml
+  - from-file: common/dnf.yml
 
-  - type: chezmoi
-    repository: "https://github.com/alapins/dotfiles"
-    file-conflict-policy: replace # override changed files with those from the repo
+  # --- DESKTOP-ONLY dnf packages (add a dnf module here when needed) ---
 
-  - type: dnf
-    repos:
-      copr:
-        - scottames/ghostty
-        - atim/nushell
-        - ryanabx/cosmic-epoch
-      files:
-        - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-        - https://download.opensuse.org/repositories/home:Kernalix7/Fedora_%OS_VERSION%/home:Kernalix7.repo
-      keys:
-        - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-      nonfree: rpmfusion
-    install:
-      packages:
-        - brave-browser
-        - winpodx
-        - https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-        - uxplay
-        - nautilus-dropbox
-        - ghostty
-        - nushell
-        - cosmic-desktop
-        - neovim
-        - syncthing
-        - emacs
+  - from-file: common/flatpaks.yml
 
-  - type: default-flatpaks
-    configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
-        scope: system
-        # If no repo information is specified, Flathub will be used by default
-        install: # system flatpaks we want all users to have and not remove
-          # Media Creation
-          - org.audacityteam.Audacity
-          - org.gimp.GIMP
-          - org.inkscape.Inkscape
-          - org.kde.krita
-          - com.obsproject.Studio
-          # Media Players
-          - tv.plex.PlexDesktop
-          - com.plexamp.Plexamp
-          - org.videolan.VLC
-          - us.zoom.Zoom
-          - com.discordapp.Discord
-          - com.yacreader.YACReader
-          - org.flameshot.Flameshot # screenshot
-          - org.keepassxc.KeePassXC
-          - md.obsidian.Obsidian
-          - com.getpostman.Postman
-          - io.github.pwr_solaar.solaar # Logitech mouse driver
-          - it.mijorus.gearlever
-          - org.onlyoffice.desktopeditors
-          - org.localsend.localsend_app
-      - scope: user # Also add Flathub user repo, but no user packages
+  # --- DESKTOP-ONLY flatpaks ---
+  # - type: default-flatpaks
+  #   configurations:
+  #     - scope: system
+  #       install:
+  #         - com.example.DesktopOnlyApp
 
-  # appsync tools baked into the image: the Go (mikefarah) yq required by
-  # ~/.config/appsync/install.sh, plus topgrade. NOTE: Fedora's dnf `yq` is a
-  # different, incompatible tool (python jq-wrapper), so we install the real
-  # binaries from upstream releases instead.
-  - type: script
-    scripts:
-      - install-appsync-tools.sh
-
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
-
-  - type: systemd
-    system:
-      enabled:
-        - cosmic-greeter.service
+  - from-file: common/finalize.yml

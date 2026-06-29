@@ -1,0 +1,12 @@
+---
+# Shared early-setup modules (run on BOTH the desktop and laptop images).
+# Imported via `from-file: common/system.yml` — paths resolve relative to recipes/.
+modules:
+  - type: files
+    files:
+      - source: system
+        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+
+  - type: chezmoi
+    repository: "https://github.com/alapins/dotfiles"
+    file-conflict-policy: replace # override changed files with those from the repo

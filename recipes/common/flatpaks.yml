@@ -1,0 +1,32 @@
+---
+# Shared system flatpaks (run on BOTH images).
+# Machine-only flatpaks go in the individual recipe files, not here.
+modules:
+  - type: default-flatpaks
+    configurations:
+      - notify: true # Send notification after install/uninstall is finished (true/false)
+        scope: system
+        # If no repo information is specified, Flathub will be used by default
+        install: # system flatpaks we want all users to have and not remove
+          # Media Creation
+          - org.audacityteam.Audacity
+          - org.gimp.GIMP
+          - org.inkscape.Inkscape
+          - org.kde.krita
+          - com.obsproject.Studio
+          # Media Players
+          - tv.plex.PlexDesktop
+          - com.plexamp.Plexamp
+          - org.videolan.VLC
+          - us.zoom.Zoom
+          - com.discordapp.Discord
+          - com.yacreader.YACReader
+          - org.flameshot.Flameshot # screenshot
+          - org.keepassxc.KeePassXC
+          - md.obsidian.Obsidian
+          - com.getpostman.Postman
+          - io.github.pwr_solaar.solaar # Logitech mouse driver
+          - it.mijorus.gearlever
+          - org.onlyoffice.desktopeditors
+          - org.localsend.localsend_app
+      - scope: user # Also add Flathub user repo, but no user packages
