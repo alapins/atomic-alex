@@ -33,23 +33,53 @@ modules:
   # installer force-pulls i686 mesa for 32-bit app support; without negativo17
   # enabled it grabs Fedora's older epoch-0 i686 mesa, whose files collide with
   # the epoch-1 x86_64 already installed (build fails on mesa-vulkan-drivers).
-  # Enabling negativo17 here and pre-installing the matching epoch-1 i686 mesa
-  # makes the later NVIDIA transaction find them already satisfied. Because
-  # negativo17 is epoch 1, it automatically wins over Fedora's epoch 0.
-  - type: dnf
-    repos:
-      files:
-        - https://negativo17.org/repos/fedora-multimedia.repo
-      keys:
-        - https://negativo17.org/repos/RPM-GPG-KEY-slaanesh
-    install:
-      packages:
-        - mesa-vulkan-drivers.i686
-        - mesa-dri-drivers.i686
-        - mesa-filesystem.i686
-        - mesa-libEGL.i686
-        - mesa-libGL.i686
-        - mesa-libgbm.i686
+  # Pre-installing the matching epoch-1 i686 mesa makes the later NVIDIA
+  # transaction find it already satisfied.
+  #
+  # The catch: RPM requires a multilib pair (i686 + x86_64) to be the EXACT same
+  # version-release for the files they share (/usr/share/drirc.d/*, licenses...).
+  # The base image lags Fedora/negativo17 `updates` intraday, so when negativo17
+  # ships mesa N while the base still has mesa N-1 (x86_64), installing only the
+  # newer i686 collides: "file ... conflicts with ... mesa-...x86_64".
+  #
+  # We can't use the blue-build `dnf` module here because its `install` has
+  # ensure-present semantics: it treats the already-installed x86_64 mesa as
+  # satisfied and refuses to upgrade it, so the arches stay skewed. And we can't
+  # pin the i686 down to the base's exact version-release either -- negativo17 is
+  # "latest only" and no longer carries it. So we do it by hand: enable
+  # negativo17, `upgrade` the x86_64 mesa and `install` the i686 mesa in the same
+  # step, bringing BOTH arches to the newest epoch-1 version in lockstep (a no-op
+  # when already aligned). Remove the repo file afterward so it doesn't ship.
+  - type: script
+    snippets:
+      - |
+        set -euo pipefail
+        curl -fsSL https://negativo17.org/repos/fedora-multimedia.repo \
+          -o /etc/yum.repos.d/fedora-multimedia.repo
+        rpm --import https://negativo17.org/repos/RPM-GPG-KEY-slaanesh
+        dnf5 -y upgrade \
+          mesa-vulkan-drivers mesa-dri-drivers mesa-filesystem \
+          mesa-libEGL mesa-libGL mesa-libgbm
+        dnf5 -y install \
+          mesa-vulkan-drivers.i686 mesa-dri-drivers.i686 mesa-filesystem.i686 \
+          mesa-libEGL.i686 mesa-libGL.i686 mesa-libgbm.i686
+        rm -f /etc/yum.repos.d/fedora-multimedia.repo
+
+  # --- LAPTOP-ONLY preflight: pin the kernel before the akmods transaction ---
+  # aurora-dx:latest and the uBlue akmods are built in lockstep for ONE kernel,
+  # but Fedora's `updates` repo moves ahead intraday. When it does, the akmods
+  # dnf5 transaction greedily pulls the newer kernel-core/kernel-modules-core
+  # from `updates`, which conflicts with the base image's installed kernel and
+  # the prebuilt (kernel-pinned) kmods -> depsolve dies with
+  # "cannot install both kernel-core-<new> and kernel-core-<old>".
+  # Excluding the kernel *binary* packages holds them at the installed version
+  # (the installed kernel still satisfies the kmods' `kernel-uname-r` dep, and
+  # kernel-devel/-headers stay available). dnf5 reads this drop-in from
+  # /etc/dnf/libdnf5.conf.d automatically. We remove it right after akmods so
+  # the shipped image doesn't carry a stray kernel exclude.
+  - type: script
+    snippets:
+      - 'printf "[main]\nexclude=kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra kernel-uki-virt\n" > /etc/dnf/libdnf5.conf.d/00-hold-kernel.conf'
 
   # --- LAPTOP-ONLY: proprietary NVIDIA driver (Maxwell .. pre-Blackwell) ---
   # Requires the `signing` module (pulled in via common/finalize.yml) so the
@@ -58,6 +88,11 @@ modules:
     base: main
     nvidia-driver: nvidia
     install: [] # no extra kmods beyond the NVIDIA driver
+
+  # Release the kernel hold now that the akmods transaction is done.
+  - type: script
+    snippets:
+      - 'rm -f /etc/dnf/libdnf5.conf.d/00-hold-kernel.conf'
 
   # --- LAPTOP-ONLY dnf packages (add a dnf module here when needed) ---
 
