@@ -9,6 +9,21 @@
 #   kernel modules only support Turing (GTX 16xx / RTX 20xx) and newer. The
 #   1050 Ti is Pascal, so it needs the proprietary `nvidia` driver, which the
 #   blue-build `akmods` module pulls (signed) from ublue-os/akmods.
+#
+# INVARIANTS (this image layers onto the ROLLING `latest` base, which drifts
+# ahead/behind Fedora `updates` intraday -- most build breakages trace to that).
+# Preserve these two rules or the drift-induced failures come back:
+#   1. KERNEL PINNED: hold the kernel binary packages at the base image's
+#      installed version across the akmods transaction. The prebuilt kmods are
+#      kernel-locked, so letting dnf pull a newer kernel from `updates` breaks
+#      depsolve. Implemented by the libdnf5.conf.d exclude added before `akmods`
+#      and removed after.
+#   2. MULTILIB IN LOCKSTEP: any i686 userspace layered from a floating repo
+#      must have its x86_64 counterpart upgraded in the SAME step, so the pair is
+#      the identical version-release (rpm requires it for shared files).
+#      Implemented by the mesa preflight (upgrade x86_64 + install i686 from
+#      negativo17). If the driver ever pulls i686 of another floating package,
+#      add that package to the same list.
 name: atomic-alex-nvidia
 description: This is my personal OS image (XPS 9570 laptop, NVIDIA).
 
