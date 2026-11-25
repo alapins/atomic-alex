@@ -36,8 +36,10 @@ base-image: ghcr.io/ublue-os/aurora-dx
 # newest daily F44 (NOT a beta) built in the same pipeline as the akmods, so the
 # kernel stays in lockstep and the uBlue-signed kmod works under Secure Boot.
 # (The desktop image has no NVIDIA layering, so it stays on `stable`.)
-# Pinned to Fedora 44 while `latest` is F45 (see recipe.yml). latest-44 is the floating F44 tag.
-image-version: latest-44
+# `latest` is now Fedora 45. Do NOT pin latest-44: that tag froze at an older kernel while
+# the uBlue akmods kept tracking the newest F44 kernel, so the kmod's kernel-uname-r
+# requirement can never be met (blocked by the kernel hold below).
+image-version: latest
 
 # module configuration, executed in order
 modules:

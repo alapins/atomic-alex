@@ -2,6 +2,20 @@
 # Shared dnf repos + packages (run on BOTH images).
 # Machine-only packages go in the individual recipe files, not here.
 modules:
+  # winpodx (home:Kernalix7 on OBS) only builds Fedora 42-44 + Rawhide; there is no
+  # Fedora_45 repo yet (upstream issue Kernalix7/winpodx#906). The package is a noarch
+  # pure-Python RPM, so Rawhide's build works on the same Python as the release it
+  # tracks. Use Fedora_<N> when upstream has it, else fall back to Rawhide, so this
+  # self-heals once F45 is added. Must run BEFORE the dnf module that installs winpodx.
+  - type: script
+    snippets:
+      - |
+        ver="$(rpm -E %fedora)"
+        base="https://download.opensuse.org/repositories/home:/Kernalix7"
+        url="$base/Fedora_${ver}/home:Kernalix7.repo"
+        curl -fsI "$url" >/dev/null || url="$base/Fedora_Rawhide/home:Kernalix7.repo"
+        echo "winpodx repo: $url"
+        curl -fsSL "$url" -o /etc/yum.repos.d/home:Kernalix7.repo
   - type: dnf
     repos:
       copr:
@@ -10,7 +24,6 @@ modules:
         - ryanabx/cosmic-epoch
       files:
         - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-        - https://download.opensuse.org/repositories/home:Kernalix7/Fedora_%OS_VERSION%/home:Kernalix7.repo
       keys:
         - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
       nonfree: rpmfusion
