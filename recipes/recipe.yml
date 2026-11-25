@@ -7,7 +7,10 @@ name: atomic-alex
 description: This is my personal OS image (desktop).
 
 base-image: ghcr.io/ublue-os/aurora-dx
-image-version: stable # latest is also supported if you want new updates ASAP
+# Pinned to the last Fedora 44 stable build. `stable` now resolves to Fedora 45 and
+# upstream publishes no floating stable-44 tag, so this is a fixed catch-up point.
+# Move to `stable` (F45) once third-party repos (home:Kernalix7 / winpodx) have F45 builds.
+image-version: stable-44.20261110.1
 
 # module configuration, executed in order
 modules:
